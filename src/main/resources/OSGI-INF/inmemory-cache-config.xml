@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.rendition.cache">
+
+  <extension target="org.nuxeo.ecm.core.cache.CacheService" point="caches">
+
+    <cache name="LazyRenditionCache" class="org.nuxeo.ecm.core.cache.InMemoryCacheImpl">
+      <ttl>60</ttl><!-- minutes -->
+      <option name="maxSize">1000</option>
+    </cache>
+
+  </extension>
+
+</component>
