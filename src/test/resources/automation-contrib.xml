@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.rendition.cmis.automation.types-contrib"
+  version="1.0">
+
+  <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+    point="chains">
+
+    <chain id="GetAlternateBlob">
+      <operation id="Document.Pop"/>
+      <operation id="Blob.Get">
+        <param type="string" name="xpath">alternate:secondaryContent</param>
+      </operation>
+    </chain>
+  </extension>
+
+</component>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.platform.TemplateSources.rendition2.contrib">
+
+  <require>org.nuxeo.ecm.platform.rendition.contrib</require>
+
+  <extension target="org.nuxeo.ecm.platform.rendition.service.RenditionService"
+    point="renditionDefinitions">
+
+    <renditionDefinition name="alternate" enable="true">
+           <operationChain>GetAlternateBlob</operationChain>
+    </renditionDefinition>
+
+  </extension>
+
+</component>
