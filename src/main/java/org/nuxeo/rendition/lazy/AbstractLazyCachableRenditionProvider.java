@@ -76,7 +76,7 @@ public abstract class AbstractLazyCachableRenditionProvider implements Rendition
         List<Blob> blobs = new ArrayList<Blob>();
         StringBlob emptyBlob = new StringBlob("");
         emptyBlob.setFilename("inprogress");
-        emptyBlob.setMimeType("text/plain");
+        emptyBlob.setMimeType("text/plain;empty=true");
         blobs.add(emptyBlob);
         return blobs;
     }
