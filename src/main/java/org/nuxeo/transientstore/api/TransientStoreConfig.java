@@ -18,12 +18,6 @@ public class TransientStoreConfig {
     @XNode("absoluteMaxSizeMB")
     protected int absoluteMaxSizeMB=-1;
 
-    @XNode("targetMaxEntries")
-    protected int targetMaxEntries=10000;
-
-    @XNode("absoluteMaxEntries")
-    protected int absoluteMaxEntries=-1;
-
     @XNode("fistLevelTTL")
     protected int fistLevelTTL = 60*2;
 
@@ -56,22 +50,6 @@ public class TransientStoreConfig {
 
     public void setAbsoluteMaxSizeMB(int absoluteMaxSizeMB) {
         this.absoluteMaxSizeMB = absoluteMaxSizeMB;
-    }
-
-    public int getTargetMaxEntries() {
-        return targetMaxEntries;
-    }
-
-    public void setTargetMaxEntries(int targetMaxEntries) {
-        this.targetMaxEntries = targetMaxEntries;
-    }
-
-    public int getAbsoluteMaxEntries() {
-        return absoluteMaxEntries;
-    }
-
-    public void setAbsoluteMaxEntries(int absoluteMaxEntries) {
-        this.absoluteMaxEntries = absoluteMaxEntries;
     }
 
     public int getFistLevelTTL() {

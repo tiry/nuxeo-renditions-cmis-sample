@@ -1,5 +1,6 @@
 package org.nuxeo.transientstore.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -19,4 +20,8 @@ public interface StorageEntry extends Serializable {
     Serializable get(String key);
 
     void beforeRemove();
+
+    void  persist(File directory);
+
+    void  load(File directory);
 }

@@ -1,7 +1,10 @@
 package org.nuxeo.transientstore;
 
+import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
+import org.nuxeo.common.Environment;
 import org.nuxeo.ecm.core.cache.Cache;
 import org.nuxeo.transientstore.api.StorageEntry;
 import org.nuxeo.transientstore.api.TransientStore;
@@ -10,6 +13,8 @@ import org.nuxeo.transientstore.api.TransientStoreConfig;
 public abstract class AbstractTransientStore implements TransientStore {
 
     protected final TransientStoreConfig config;
+
+    protected File cacheDir;
 
     AbstractTransientStore(TransientStoreConfig config) {
         this.config = config;
@@ -26,15 +31,29 @@ public abstract class AbstractTransientStore implements TransientStore {
     protected abstract Cache getL2Cache();
 
     @Override
-    public void put(StorageEntry entry) {
+    public void put(StorageEntry entry) throws IOException {
+        if (getStorageSizeMB() < config.getAbsoluteMaxSizeMB()) {
+            entry = persistEntry(entry);
+            incrementStorageSize(entry);
+            getL1Cache().put(entry.getId(), entry);
+        } else {
+            throw new IOException("Maximum Transient Space Exceeded");
+        }
+    }
 
-
+    protected StorageEntry persistEntry(StorageEntry entry) {
+        entry.persist(getCachingDirectory(entry.getId()));
+        return entry;
     }
 
     @Override
-    public StorageEntry get(String key) {
-        // TODO Auto-generated method stub
-        return null;
+    public StorageEntry get(String key) throws IOException {
+        StorageEntry entry = (StorageEntry)getL1Cache().get(key);
+        if (entry==null) {
+            entry = (StorageEntry)getL2Cache().get(key);
+        }
+        entry.load(getCachingDirectory(key));
+        return entry;
     }
 
     @Override
@@ -47,6 +66,7 @@ public abstract class AbstractTransientStore implements TransientStore {
             getL1Cache().invalidate(key);
         }
         if (entry!=null) {
+            decrementStorageSize(entry);
             entry.beforeRemove();
         }
     }
@@ -56,21 +76,49 @@ public abstract class AbstractTransientStore implements TransientStore {
         StorageEntry entry = (StorageEntry)getL1Cache().get(key);
         if (entry!=null) {
             getL1Cache().invalidate(key);
-            // XXX if size > target => remove !
-            getL2Cache().put(key, entry);
+            if (getStorageSizeMB() < config.getTargetMaxSizeMB()) {
+                getL2Cache().put(key, entry);
+            }
         }
     }
 
     @Override
-    public void removeAll() {
-        // TODO Auto-generated method stub
-
+    public void removeAll() throws IOException {
+        getL1Cache().invalidateAll();
+        getL2Cache().invalidateAll();
+        doGC();
     }
 
     @Override
     public TransientStoreConfig getConfig() {
-        // TODO Auto-generated method stub
-        return null;
+        return config;
+    }
+
+    protected File getCachingDirectory(String  key) {
+        File cachingDir = new File(getCachingDirectory(), key);
+        if (!cachingDir.exists()) {
+            cachingDir.mkdir();
+        }
+        return cachingDir;
+    }
+    protected File getCachingDirectory() {
+        if (cacheDir==null) {
+            File data = new File(Environment.getDefault().getData(), config.getName());
+            if (data.exists()) {
+                try {
+                    FileUtils.deleteDirectory(data);
+                } catch (IOException cause) {
+                    throw new RuntimeException("Cannot create cache dir " + data, cause);
+                }
+            }
+            data.mkdirs();
+            return cacheDir = data.getAbsoluteFile();
+        }
+        return cacheDir;
+    }
+
+    protected void doGC() {
+        // XXX
     }
 
 }
