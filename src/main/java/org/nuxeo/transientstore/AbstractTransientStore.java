@@ -41,7 +41,7 @@ public abstract class AbstractTransientStore implements TransientStore {
         }
     }
 
-    protected StorageEntry persistEntry(StorageEntry entry) {
+    protected StorageEntry persistEntry(StorageEntry entry) throws IOException {
         entry.persist(getCachingDirectory(entry.getId()));
         return entry;
     }

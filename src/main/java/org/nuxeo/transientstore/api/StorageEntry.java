@@ -21,7 +21,9 @@ public interface StorageEntry extends Serializable {
 
     void beforeRemove();
 
-    void  persist(File directory);
+    void persist(File directory) throws IOException;
 
-    void  load(File directory);
+    void load(File directory) throws IOException;
+
+    void update(StorageEntry other);
 }
