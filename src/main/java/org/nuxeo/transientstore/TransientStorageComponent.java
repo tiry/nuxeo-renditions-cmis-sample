@@ -47,6 +47,7 @@ public class TransientStorageComponent extends DefaultComponent implements Trans
     public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
         if (EP_STORE.equals(extensionPoint)) {
             TransientStoreConfig config = (TransientStoreConfig) contribution;
+            // XXX merge
             configs.put(config.getName(), config);
         }
     }
@@ -57,4 +58,11 @@ public class TransientStorageComponent extends DefaultComponent implements Trans
            registerStore(config);
        }
     }
+
+    public void doGC() {
+        for (TransientStore store : stores.values()) {
+            store.doGC();
+        }
+    }
+
 }

@@ -4,7 +4,8 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-Name: org.nuxeo.renditons.cmis.sample
 Bundle-ManifestVersion: 2
-Nuxeo-Component: OSGI-INF/inmemory-cache-config.xml
+Nuxeo-Component: OSGI-INF/inmemory-cache-config.xml,
+ OSGI-INF/transientstore-service.xml
 Bundle-SymbolicName: org.nuxeo.renditons.cmis.sample
 
 

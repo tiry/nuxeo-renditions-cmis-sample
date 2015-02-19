@@ -22,7 +22,7 @@ public class ClusterAwareTransientStore extends AbstractTransientStore {
     }
 
     @Override
-    protected int getStorageSizeMB() {
+    public int getStorageSizeMB() {
         // TODO Auto-generated method stub
         return 0;
     }

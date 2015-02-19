@@ -25,7 +25,7 @@ public class SimpleTransientStore extends AbstractTransientStore {
     }
 
     @Override
-    protected int getStorageSizeMB() {
+    public int getStorageSizeMB() {
         return (int) storageSizeKB.get()/1024;
     }
 

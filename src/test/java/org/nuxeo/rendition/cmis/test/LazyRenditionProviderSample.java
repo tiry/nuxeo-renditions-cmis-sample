@@ -27,4 +27,9 @@ public class LazyRenditionProviderSample extends AbstractLazyCachableRenditionPr
         return blobs;
     }
 
+    @Override
+    protected boolean perUserRendition() {
+        return false;
+    }
+
 }

@@ -9,4 +9,6 @@ public interface TransientStoreService {
     TransientStoreConfig getStoreConfig(String name) throws IOException;
 
     TransientStore registerStore(TransientStoreConfig config);
+
+    void doGC();
 }

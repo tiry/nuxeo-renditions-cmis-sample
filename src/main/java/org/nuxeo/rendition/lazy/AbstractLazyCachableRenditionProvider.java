@@ -13,6 +13,7 @@ import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
+import org.nuxeo.ecm.core.api.local.ClientLoginModule;
 import org.nuxeo.ecm.core.cache.Cache;
 import org.nuxeo.ecm.core.cache.CacheService;
 import org.nuxeo.ecm.core.work.AbstractWork;
@@ -115,6 +116,8 @@ public abstract class AbstractLazyCachableRenditionProvider implements Rendition
 
     protected abstract List<Blob> doComputeRendition(CoreSession session, DocumentModel doc, RenditionDefinition def);
 
+    protected abstract boolean perUserRendition();
+
     protected String buildRenditionKey(DocumentModel doc, RenditionDefinition def) {
 
         StringBuffer sb = new StringBuffer(doc.getId());
@@ -122,6 +125,10 @@ public abstract class AbstractLazyCachableRenditionProvider implements Rendition
         Calendar modif = (Calendar) doc.getPropertyValue("dc:modified");
         if (modif!=null) {
             sb.append(modif.getTimeInMillis());
+            sb.append("::");
+        }
+        if (perUserRendition()) {
+            sb.append(doc.getCoreSession().getPrincipal().getName());
             sb.append("::");
         }
         sb.append(def.getName());

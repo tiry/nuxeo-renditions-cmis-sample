@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.transientstore.TransientStorageComponent.testContrib">
+
+  <extension
+    target="org.nuxeo.transientstore.TransientStorageComponent"
+    point="store">
+
+    <store name="testStore" cluster="false">
+    </store>
+
+  </extension>
+
+</component>
+
+
+

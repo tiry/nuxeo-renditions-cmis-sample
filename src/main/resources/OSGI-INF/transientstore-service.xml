@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.transientstore.TransientStorageComponent">
+
+  <service>
+    <provide interface="org.nuxeo.transientstore.api.TransientStoreService" />
+  </service>
+
+  <implementation class="org.nuxeo.transientstore.TransientStorageComponent" />
+
+  <extension-point name="store">
+
+    <documentation>
+    </documentation>
+    <object class="org.nuxeo.transientstore.api.TransientStoreConfig"/>
+
+  </extension-point>
+
+  <extension
+    target="org.nuxeo.ecm.core.scheduler.SchedulerService"
+    point="schedule">
+    <schedule id="transientStoreGC">
+      <username>Administrator</username>
+      <eventId>transientStoreGCStart</eventId>
+      <eventCategory>default</eventCategory>
+      <!-- every second -->
+      <cronExpression>*/1 * * * * ?</cronExpression>
+    </schedule>
+  </extension>
+
+  <extension target="org.nuxeo.ecm.core.event.EventServiceComponent"
+    point="listener">
+    <listener name="transientStoreGCStart" async="false" postCommit="false"
+      class="org.nuxeo.transientstore.TransientStorageGCTrigger">
+      <event>transientStoreGC</event>
+    </listener>
+  </extension>
+
+</component>
+
+
+

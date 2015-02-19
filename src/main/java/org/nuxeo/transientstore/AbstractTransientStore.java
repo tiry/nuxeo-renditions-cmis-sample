@@ -2,8 +2,14 @@ package org.nuxeo.transientstore;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.nuxeo.common.Environment;
 import org.nuxeo.ecm.core.cache.Cache;
 import org.nuxeo.ecm.core.cache.CacheDescriptor;
@@ -18,6 +24,8 @@ import org.nuxeo.transientstore.api.TransientStoreConfig;
 public abstract class AbstractTransientStore implements TransientStore {
 
     protected final TransientStoreConfig config;
+
+    protected static final Log log = LogFactory.getLog(AbstractTransientStore.class);
 
     protected File cacheDir;
 
@@ -52,7 +60,7 @@ public abstract class AbstractTransientStore implements TransientStore {
 
     protected abstract void decrementStorageSize(StorageEntry entry);
 
-    protected abstract int getStorageSizeMB();
+    public abstract int getStorageSizeMB();
 
 
     protected Cache getL1Cache() {
@@ -127,8 +135,17 @@ public abstract class AbstractTransientStore implements TransientStore {
         return config;
     }
 
+    protected String getCachingDirName(String key) {
+        return key;
+    }
+
+    protected String getKeyCachingDirName(String dir) {
+        return dir;
+    }
+
+
     protected File getCachingDirectory(String  key) {
-        File cachingDir = new File(getCachingDirectory(), key);
+        File cachingDir = new File(getCachingDirectory(), getCachingDirName(key));
         if (!cachingDir.exists()) {
             cachingDir.mkdir();
         }
@@ -150,8 +167,47 @@ public abstract class AbstractTransientStore implements TransientStore {
         return cacheDir;
     }
 
-    protected void doGC() {
-        // XXX
-    }
+    public void doGC() {
+        File dir = getCachingDirectory();
+        try {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir.getAbsolutePath()))) {
+                for (Path entry: stream) {
+                    String key = getKeyCachingDirName(entry.getName(-1).toString());
+                    try {
+                        if (getL1Cache().get(key)!=null) {
+                            continue;
+                        }
+                        if (getL2Cache().get(key)!=null) {
+                            continue;
+                        }
+                        FileUtils.deleteDirectory(entry.toFile());
+                    } catch (IOException e) {
+                        log.error("Error while performing GC", e);
+                    }
 
+                }
+            }
+        } catch (IOException e) {
+            log.error("Error while performing GC", e);
+        }
+
+/*
+        for (String loc : dir.list()) {
+            File entryDir = new File(dir, loc);
+            if (entryDir.isDirectory()) {
+                String key = getKeyCachingDirName(loc);
+                try {
+                    if (getL1Cache().get(key)!=null) {
+                        continue;
+                    }
+                    if (getL2Cache().get(key)!=null) {
+                        continue;
+                    }
+                    FileUtils.deleteDirectory(entryDir);
+                } catch (IOException e) {
+                    log.error("Error while performing GC", e);
+                }
+            }
+        }*/
+    }
 }

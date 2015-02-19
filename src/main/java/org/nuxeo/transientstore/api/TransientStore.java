@@ -36,4 +36,9 @@ public interface TransientStore {
     void removeAll() throws IOException;
 
     TransientStoreConfig getConfig() throws IOException;
+
+    void doGC();
+
+    int getStorageSizeMB();
+
 }

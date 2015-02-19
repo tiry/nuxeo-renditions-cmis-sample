@@ -1,16 +1,18 @@
 package org.nuxeo.transientstore.api;
 
 import org.nuxeo.common.xmap.annotation.XNode;
+import org.nuxeo.common.xmap.annotation.XObject;
 import org.nuxeo.ecm.core.cache.CacheDescriptor;
 import org.nuxeo.ecm.core.cache.InMemoryCacheImpl;
 
+@XObject("store")
 public class TransientStoreConfig {
 
     @XNode("@name")
     protected String name;
 
     @XNode("@cluster")
-    protected boolean cluster=false;
+    protected boolean cluster = false;
 
     // target size that ideally should never be exceeded
     @XNode("targetMaxSizeMB")
@@ -18,10 +20,10 @@ public class TransientStoreConfig {
 
     // size that must never be exceeded
     @XNode("absoluteMaxSizeMB")
-    protected int absoluteMaxSizeMB=-1;
+    protected int absoluteMaxSizeMB = -1;
 
     @XNode("fistLevelTTL")
-    protected int fistLevelTTL = 60*2;
+    protected int fistLevelTTL = 60 * 2;
 
     @XNode("secondLevelTTL")
     protected int secondLevelTTL = 10;
@@ -80,7 +82,7 @@ public class TransientStoreConfig {
             } else {
                 // XXX
             }
-            super.ttl=ttl;
+            super.ttl = ttl;
         }
     }
 
