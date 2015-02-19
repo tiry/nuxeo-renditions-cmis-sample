@@ -6,6 +6,11 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.nuxeo.common.Environment;
 import org.nuxeo.ecm.core.cache.Cache;
+import org.nuxeo.ecm.core.cache.CacheDescriptor;
+import org.nuxeo.ecm.core.cache.CacheService;
+import org.nuxeo.ecm.core.cache.CacheServiceImpl;
+import org.nuxeo.runtime.api.Framework;
+import org.nuxeo.runtime.model.impl.ExtensionImpl;
 import org.nuxeo.transientstore.api.StorageEntry;
 import org.nuxeo.transientstore.api.TransientStore;
 import org.nuxeo.transientstore.api.TransientStoreConfig;
@@ -16,8 +21,31 @@ public abstract class AbstractTransientStore implements TransientStore {
 
     protected File cacheDir;
 
+    protected Cache l1Cache;
+
+    protected Cache l2Cache;
+
     AbstractTransientStore(TransientStoreConfig config) {
         this.config = config;
+        initCaches();
+    }
+
+    protected void initCaches() {
+        CacheService cs = Framework.getService(CacheService.class);
+        if (cs!=null) {
+            // register the caches
+            //
+            // temporary until we have a clean API
+            CacheDescriptor l1cd = config.getL1CacheConfig();
+            CacheDescriptor l2cd = config.getL2CacheConfig();
+            ExtensionImpl ext = new ExtensionImpl();
+            ext.setContributions(new Object[]{l1cd, l2cd});
+            ((CacheServiceImpl)cs).registerExtension(ext);
+
+            // get caches
+            l1Cache = cs.getCache(l1cd.name);
+            l2Cache = cs.getCache(l2cd.name);
+        }
     }
 
     protected abstract void incrementStorageSize(StorageEntry entry);
@@ -26,9 +54,14 @@ public abstract class AbstractTransientStore implements TransientStore {
 
     protected abstract int getStorageSizeMB();
 
-    protected abstract Cache getL1Cache();
 
-    protected abstract Cache getL2Cache();
+    protected Cache getL1Cache() {
+        return l1Cache;
+    }
+
+    protected Cache getL2Cache() {
+        return l2Cache;
+    }
 
     @Override
     public void put(StorageEntry entry) throws IOException {

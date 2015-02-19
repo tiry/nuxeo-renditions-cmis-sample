@@ -26,4 +26,6 @@ public interface StorageEntry extends Serializable {
     void load(File directory) throws IOException;
 
     void update(StorageEntry other);
+
+    int getSizeInKB();
 }

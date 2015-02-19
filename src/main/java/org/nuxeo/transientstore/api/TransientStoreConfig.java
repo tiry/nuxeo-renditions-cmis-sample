@@ -1,6 +1,8 @@
 package org.nuxeo.transientstore.api;
 
 import org.nuxeo.common.xmap.annotation.XNode;
+import org.nuxeo.ecm.core.cache.CacheDescriptor;
+import org.nuxeo.ecm.core.cache.InMemoryCacheImpl;
 
 public class TransientStoreConfig {
 
@@ -68,5 +70,26 @@ public class TransientStoreConfig {
         this.secondLevelTTL = secondLevelTTL;
     }
 
+    protected class TransientCacheCong extends CacheDescriptor {
+
+        TransientCacheCong(String name, int ttl) {
+            super();
+            super.name = name;
+            if (!cluster) {
+                super.implClass = InMemoryCacheImpl.class;
+            } else {
+                // XXX
+            }
+            super.ttl=ttl;
+        }
+    }
+
+    public CacheDescriptor getL1CacheConfig() {
+        return new TransientCacheCong(name + "L1", fistLevelTTL);
+    }
+
+    public CacheDescriptor getL2CacheConfig() {
+        return new TransientCacheCong(name + "L2", secondLevelTTL);
+    }
 
 }

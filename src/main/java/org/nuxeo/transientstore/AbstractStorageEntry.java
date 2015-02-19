@@ -102,4 +102,12 @@ public abstract class AbstractStorageEntry implements StorageEntry {
      // XXX not sure about the semantic
     }
 
+    @Override
+    public int getSizeInKB() {
+        int size = 0;
+        for (Blob blob : blobs) {
+            size+= blob.getLength()/1024;
+        }
+        return size;
+    }
 }
