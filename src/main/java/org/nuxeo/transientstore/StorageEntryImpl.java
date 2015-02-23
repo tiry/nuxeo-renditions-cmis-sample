@@ -4,7 +4,7 @@ public class StorageEntryImpl extends AbstractStorageEntry {
 
     private static final long serialVersionUID = 1L;
 
-    protected StorageEntryImpl(String id) {
+    public StorageEntryImpl(String id) {
         super(id);
     }
 

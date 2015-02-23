@@ -11,7 +11,9 @@ public interface StorageEntry extends Serializable {
 
     String getId();
 
-    void setBlobs(List<Blob> blobs) throws IOException;
+    void setBlobs(List<Blob> blobs);
+
+    List<Blob> addBlob(Blob blob);
 
     List<Blob> getBlobs();
 
@@ -27,5 +29,5 @@ public interface StorageEntry extends Serializable {
 
     void update(StorageEntry other);
 
-    int getSizeInKB();
+    long getSize();
 }

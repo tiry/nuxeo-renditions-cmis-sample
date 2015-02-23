@@ -2,13 +2,12 @@ package org.nuxeo.transientstore;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.nuxeo.ecm.core.cache.Cache;
 import org.nuxeo.transientstore.api.StorageEntry;
 import org.nuxeo.transientstore.api.TransientStoreConfig;
 
 public class SimpleTransientStore extends AbstractTransientStore {
 
-    protected AtomicLong storageSizeKB = new AtomicLong(0);
+    protected AtomicLong storageSize = new AtomicLong(0);
 
     SimpleTransientStore(TransientStoreConfig config) {
         super(config);
@@ -16,17 +15,22 @@ public class SimpleTransientStore extends AbstractTransientStore {
 
     @Override
     protected void incrementStorageSize(StorageEntry entry) {
-        storageSizeKB.addAndGet(entry.getSizeInKB());
+        storageSize.addAndGet(entry.getSize());
     }
 
     @Override
     protected void decrementStorageSize(StorageEntry entry) {
-        storageSizeKB.addAndGet(-entry.getSizeInKB());
+        storageSize.addAndGet(-entry.getSize());
+    }
+
+    @Override
+    protected long getStorageSize() {
+        return (int) storageSize.get();
     }
 
     @Override
     public int getStorageSizeMB() {
-        return (int) storageSizeKB.get()/1024;
+        return (int) getStorageSize()/(1024*1024);
     }
 
 }

@@ -27,9 +27,11 @@ import org.nuxeo.transientstore.api.TransientStoreService;
 
 public class TransientStorageGCTrigger implements EventListener {
 
+    public static final String EVENT ="transientStoreGCStart";
+
     @Override
     public void handleEvent(Event event) throws ClientException {
-        if (event.getName().equals("testEvent")) {
+        if (event.getName().equals(EVENT)) {
 
             WorkManager wm = Framework.getService(WorkManager.class);
             wm.schedule(new AbstractWork() {

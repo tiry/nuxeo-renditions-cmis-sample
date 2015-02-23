@@ -16,7 +16,7 @@ public class TransientStoreConfig {
 
     // target size that ideally should never be exceeded
     @XNode("targetMaxSizeMB")
-    protected int targetMaxSizeMB;
+    protected int targetMaxSizeMB = -1;
 
     // size that must never be exceeded
     @XNode("absoluteMaxSizeMB")

@@ -36,9 +36,19 @@ public abstract class AbstractStorageEntry implements StorageEntry {
     }
 
     @Override
-    public void setBlobs(List<Blob> blobs) throws IOException {
+    public void setBlobs(List<Blob> blobs) {
         this.blobs=blobs;
         hasBlobs = blobs!=null;
+    }
+
+    @Override
+    public List<Blob> addBlob(Blob blob)  {
+        if (blobs == null) {
+            blobs = new ArrayList<Blob>();
+        }
+        blobs.add(blob);
+        hasBlobs=true;
+        return blobs;
     }
 
     @Override
@@ -77,6 +87,7 @@ public abstract class AbstractStorageEntry implements StorageEntry {
                 cached.put("mimetype", blob.getMimeType());
                 cachedBlobs.add(cached);
             }
+            blobs = null;
         }
     }
 
@@ -103,10 +114,10 @@ public abstract class AbstractStorageEntry implements StorageEntry {
     }
 
     @Override
-    public int getSizeInKB() {
+    public long getSize() {
         int size = 0;
         for (Blob blob : blobs) {
-            size+= blob.getLength()/1024;
+            size+= blob.getLength();
         }
         return size;
     }
