@@ -33,6 +33,13 @@ public class CachedRenditionResult implements Serializable {
         this.renditionKey=renditionKey;
     }
 
+    public static void resetCache() throws IOException {
+        if (cacheDir!=null) {
+            FileUtils.deleteDirectory(cacheDir);
+        }
+        cacheDir=null;
+    }
+
     public void setBlobs(List<Blob> blobs) throws IOException {
         cachedBlobs = new ArrayList<Map<String,String>>();
         File dir = new File (getCachingDirectory(), renditionKey);

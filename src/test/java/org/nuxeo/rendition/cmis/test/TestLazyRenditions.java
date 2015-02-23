@@ -1,6 +1,9 @@
 
 package org.nuxeo.rendition.cmis.test;
 
+import org.apache.commons.io.IOUtils;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +13,7 @@ import org.nuxeo.ecm.core.event.EventService;
 import org.nuxeo.ecm.platform.rendition.Rendition;
 import org.nuxeo.ecm.platform.rendition.service.RenditionService;
 import org.nuxeo.ecm.platform.test.PlatformFeature;
+import org.nuxeo.rendition.lazy.CachedRenditionResult;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
@@ -35,6 +39,11 @@ public class TestLazyRenditions {
     @Inject
     CoreSession session;
 
+    @AfterClass
+    public static void cleanup() throws Exception {
+        CachedRenditionResult.resetCache();
+    }
+
     @Test
     public void testRenditions() throws Exception {
 
@@ -55,6 +64,10 @@ public class TestLazyRenditions {
         rendition = rs.getRendition(session.getRootDocument(), "iamlazy");
 
         blob = rendition.getBlob();
+
+        String data = IOUtils.toString(blob.getStream());
+
+        System.out.println(data);
 
         Assert.assertNotEquals(0, blob.getLength());
 
