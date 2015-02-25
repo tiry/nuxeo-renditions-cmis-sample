@@ -1,8 +1,23 @@
+/*
+ * (C) Copyright 2015 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Contributors:
+ * Nuxeo - initial API and implementation
+ */
 
 package org.nuxeo.rendition.cmis.test;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,8 +43,9 @@ import com.google.inject.Inject;
 @LocalDeploy("org.nuxeo.renditons.cmis.sample:renditions-test-contrib.xml")
 /**
  *
- * @author tiry
+ * Check that LazyRendition work via Nuxeo native API
  *
+ * @author <a href="mailto:tdelprat@nuxeo.com">Tiry</a>
  */
 public class TestLazyRenditions {
 
@@ -66,8 +82,6 @@ public class TestLazyRenditions {
         blob = rendition.getBlob();
 
         String data = IOUtils.toString(blob.getStream());
-
-        System.out.println(data);
 
         Assert.assertNotEquals(0, blob.getLength());
 
