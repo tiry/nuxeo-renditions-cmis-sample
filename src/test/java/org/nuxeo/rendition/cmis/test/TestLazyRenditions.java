@@ -22,13 +22,14 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.event.EventService;
+import org.nuxeo.ecm.core.transientstore.api.TransientStoreService;
 import org.nuxeo.ecm.platform.rendition.Rendition;
 import org.nuxeo.ecm.platform.rendition.service.RenditionService;
 import org.nuxeo.ecm.platform.test.PlatformFeature;
-import org.nuxeo.rendition.lazy.CachedRenditionResult;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
@@ -39,7 +40,7 @@ import com.google.inject.Inject;
 
 @Deploy({ "org.nuxeo.ecm.core.cache","org.nuxeo.ecm.platform.rendition.api", "org.nuxeo.ecm.platform.rendition.core","org.nuxeo.renditons.cmis.sample"})
 @RunWith(FeaturesRunner.class)
-@Features(PlatformFeature.class)
+@Features({PlatformFeature.class, AutomationFeature.class})
 @LocalDeploy("org.nuxeo.renditons.cmis.sample:renditions-test-contrib.xml")
 /**
  *
@@ -57,7 +58,7 @@ public class TestLazyRenditions {
 
     @AfterClass
     public static void cleanup() throws Exception {
-        CachedRenditionResult.resetCache();
+        Framework.getService(TransientStoreService.class).getStore("LazyRenditionCache").removeAll();
     }
 
     @Test

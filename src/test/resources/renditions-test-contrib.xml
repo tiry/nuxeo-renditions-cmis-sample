@@ -3,12 +3,36 @@
 
   <require>org.nuxeo.ecm.platform.rendition.contrib</require>
 
-  <extension target="org.nuxeo.ecm.platform.rendition.service.RenditionService"
-    point="renditionDefinitions">
 
-    <renditionDefinition name="iamlazy" enable="true" class="org.nuxeo.rendition.cmis.test.LazyRenditionProviderSample">
+
+  <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+    point="operations">
+    <operation class="org.nuxeo.rendition.cmis.test.SampleSlowOperation" />
+  </extension>
+
+  <extension point="chains"
+    target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+    <chain id="SlowChain">
+      <operation id="Document.Pop" />
+      <operation id="SampleSlow.Operation" />
+    </chain>
+  </extension>
+
+
+  <extension target="org.nuxeo.ecm.platform.rendition.service.RenditionService" point="renditionDefinitions">
+
+    <renditionDefinition name="iamlazy" enabled="true" class="org.nuxeo.ecm.platform.rendition.lazy.AutomationLazyRenditionProvider">
+     <operationChain>SlowChain</operationChain>
+     <allowEmptyBlob>true</allowEmptyBlob>
     </renditionDefinition>
 
   </extension>
+
+  <extension
+    target="org.nuxeo.ecm.core.transientstore.TransientStorageComponent"
+    point="store">
+    <store name="LazyRenditionCache">
+    </store>
+   </extension>
 
 </component>
